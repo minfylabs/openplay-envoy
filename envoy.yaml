@@ -1,0 +1,76 @@
+static_resources:
+  listeners:
+  - name: listener_0
+    address:
+      socket_address: { address: 0.0.0.0, port_value: 8080 }
+    filter_chains:
+    - filters:
+      - name: envoy.http_connection_manager
+        config:
+          codec_type: auto
+          stat_prefix: ingress_http
+          access_log:
+          - name: envoy.file_access_log
+            config:
+              path: "/dev/stdout"
+          route_config:
+            name: local_route
+            virtual_hosts:
+            - name: local_service
+              domains: ["*"]
+              routes:
+              - match:
+                  prefix: "/"
+                route:
+                  cluster: nucleus_cluster
+          http_filters:
+          - name: envoy.router
+
+  clusters:
+    - name: "nucleus_cluster"
+      connect_timeout: "40s"
+      # type: "strict_dns"
+      lb_policy: "LEAST_REQUEST"
+      #lb_policy: "ROUND_ROBIN"
+      hosts: [
+        {"socket_address":{"address":"127.0.0.1","port_value":12431}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12432}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12433}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12434}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12435}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12436}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12437}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12438}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12439}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12440}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12441}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12442}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12443}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12444}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12445}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12446}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12447}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12448}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12449}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12450}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12451}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12452}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12453}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12454}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12455}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12456}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12457}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12458}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12459}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12460}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12461}},
+        {"socket_address":{"address":"127.0.0.1","port_value":12462}}
+      ]
+
+      health_checks:
+        - timeout: 40s
+          interval: 20s
+          unhealthy_threshold: 2
+          healthy_threshold: 2
+          http_health_check:
+            path: "/"
